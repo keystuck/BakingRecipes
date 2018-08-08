@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/step_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/btn_prev_step"
+            android:background="@drawable/ic_arrow_upward_black_24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:visibility="gone"
+            android:contentDescription="@string/prev_btn"
+            android:onClick="prevButtonClicked"
+            android:layout_width="30dp"
+            android:layout_height="20dp" />
+
+        <ImageButton
+            android:id="@+id/btn_next_step"
+            android:background="@drawable/ic_arrow_downward_black_24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone"
+            android:contentDescription="@string/next_btn"
+            android:onClick="nextButtonClicked"
+            android:layout_width="30dp"
+            android:layout_height="20dp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

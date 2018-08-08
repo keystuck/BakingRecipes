@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/step_detail_layout"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/pv_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.google.android.exoplayer2.ui.PlayerView>
+    <TextView
+        android:id="@+id/tv_step_full_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
