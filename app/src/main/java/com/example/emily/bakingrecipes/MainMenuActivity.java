@@ -1,3 +1,9 @@
+
+//Emily Stuckey
+//Udacity Android Development
+//Baking App
+//August 8, 2018
+
 package com.example.emily.bakingrecipes;
 
 import android.os.AsyncTask;
