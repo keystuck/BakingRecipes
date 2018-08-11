@@ -1,3 +1,9 @@
+
+//Emily Stuckey
+//Udacity Android Development
+//Baking App
+//August 8, 2018
+
 package com.example.emily.bakingrecipes;
 
 import android.os.AsyncTask;
@@ -72,6 +78,8 @@ public class MainMenuActivity extends AppCompatActivity {
                 return null;
             } else {
                 try {
+                    // Code in this try block is adapted from Levit:
+                    // https://stackoverflow.com/a/27312494
                     int timeout = 1500;
                     Socket socket = new Socket();
                     SocketAddress socketAddress = new InetSocketAddress("8.8.8.8", 53);
