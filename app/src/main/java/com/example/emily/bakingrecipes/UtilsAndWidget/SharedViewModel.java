@@ -24,6 +24,8 @@ public class SharedViewModel extends ViewModel {
 
     public void clickUpon(){ clicked = true; }
 
+    public void unClick(){ clicked = false; }
+
     public boolean isClicked(){ return clicked; }
 
     public RecipeStep getSelected(){

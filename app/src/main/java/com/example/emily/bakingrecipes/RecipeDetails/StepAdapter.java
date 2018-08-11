@@ -22,12 +22,10 @@ import java.util.List;
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder>{
     private ArrayList<RecipeStep> stepArrayList;
 
-    private Context mContext;
     private final RecipeDetailMasterFragment.StepClickListener listener;
 
     public StepAdapter(ArrayList<RecipeStep> stepsInput, Context context, RecipeDetailMasterFragment.StepClickListener listener){
         stepArrayList = stepsInput;
-        mContext = context;
         this.listener = listener;
     }
 
@@ -49,22 +47,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         }
         int step_id = currentStep.getId();
         String step_short = currentStep.getShortDescription();
-        String thumbnailLink = currentStep.getThumbnailURL();
 
         holder.stepNumberTextView.setText("" + step_id);
         holder.shortDescTextView.setText(step_short);
-        if (!thumbnailLink.isEmpty()) {
-            holder.stepThumbnailImageView.setVisibility(View.VISIBLE);
-            Picasso.with(mContext)
-                    .load(thumbnailLink)
-                    .fit()
-                    .centerInside()
-                    .placeholder(R.drawable.no_image)
-                    .error(R.drawable.no_image)
-                    .into(holder.stepThumbnailImageView);
-        } else {
-            holder.stepThumbnailImageView.setVisibility(View.GONE);
-        }
+
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,14 +69,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         TextView stepNumberTextView;
         TextView shortDescTextView;
         LinearLayout linearLayout;
-        ImageView stepThumbnailImageView;
 
         public StepViewHolder(View itemView){
             super(itemView);
             stepNumberTextView = itemView.findViewById(R.id.tv_step_id);
             shortDescTextView = itemView.findViewById(R.id.tv_step_short);
             linearLayout = itemView.findViewById(R.id.step_recycler_layout);
-            stepThumbnailImageView = itemView.findViewById(R.id.iv_step_thumbnail);
         }
     }
 }

@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -17,6 +20,7 @@ import com.example.emily.bakingrecipes.UtilsAndWidget.SharedViewModel;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class SeparateStepActivity extends AppCompatActivity {
 
     private SharedViewModel model;
@@ -27,6 +31,7 @@ public class SeparateStepActivity extends AppCompatActivity {
     public final static String BUNDLE_STEP = "bundleStep";
     public final static String LANDSCAPE = "isLandscape";
     public final static String IS_DOUBLE_PANE = "isDoublePane";
+    public final static String STEP_TAG = "stepDetail";
     ImageButton prevButton;
     ImageButton nextButton;
     private boolean mLandscape;
@@ -34,8 +39,12 @@ public class SeparateStepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.single_step_holder);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
         model = ViewModelProviders.of(this).get(SharedViewModel.class);
 
         mLandscape = (findViewById(R.id.single_step_landscape) != null);
@@ -49,7 +58,6 @@ public class SeparateStepActivity extends AppCompatActivity {
             model.getmSelected();
 
             currentRecipe = incomingIntent.getParcelableExtra(RecipeDetailActivity.RECIPE_EXTRA);
-
 
             current_id = incomingIntent.getIntExtra(RecipeDetailActivity.STEP_NUMBER, 0);
             currentStep = currentRecipe.findStepById(current_id);
@@ -90,11 +98,13 @@ public class SeparateStepActivity extends AppCompatActivity {
         stepDetailFragment.setArguments(bundle);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+            if (fragmentManager.findFragmentByTag(STEP_TAG) == null) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.step_container, stepDetailFragment, STEP_TAG)
+                        .commit();
 
-
-        fragmentManager.beginTransaction()
-                .add(R.id.step_container, stepDetailFragment)
-                .commit();
+                fragmentManager.executePendingTransactions();
+            }
 
 
         //observer triggered when step changes
@@ -115,6 +125,7 @@ public class SeparateStepActivity extends AppCompatActivity {
 
                     fragmentManager2.beginTransaction()
                             .replace(R.id.step_container, stepDetailFragment2)
+                            .addToBackStack(null)
                             .commit();
                 } else { model.clickUpon(); }
             }
@@ -128,8 +139,10 @@ public class SeparateStepActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECIPE, currentRecipe);
-
+        model.unClick();
     }
+
+
 
     public void prevButtonClicked(View view){
         current_id = currentRecipe.getPreviousId(model.getSelected().getId());
@@ -174,4 +187,5 @@ public class SeparateStepActivity extends AppCompatActivity {
             model.select(currentStep);
         }
     }
+
 }

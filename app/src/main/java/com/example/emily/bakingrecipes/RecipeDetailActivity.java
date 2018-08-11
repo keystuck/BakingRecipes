@@ -1,12 +1,16 @@
 package com.example.emily.bakingrecipes;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -18,17 +22,22 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     public final static String RECIPE_EXTRA = "recipe";
     public final static String STEP_EXTRA = "stepExtra";
-    public final static String STEP_LIST = "stepList";
     public final static String STEP_NUMBER = "stepNumber";
+    public final static String MASTER_TAG = "MasterFragment";
+    public final static String STEP_TAG = "StepDetails";
 
     private Recipe currentRecipe;
     private boolean mTwoPane;
     private SharedViewModel model;
 
+    @SuppressWarnings("RedundantIfStatement")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_master_holder);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         model = ViewModelProviders.of(this).get(SharedViewModel.class);
         model.getmSelected();
@@ -58,6 +67,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 mTwoPane = false;
             }
             //if there is info, get it from the bundle
+            currentRecipe = savedInstanceState.getParcelable(RECIPE_EXTRA);
             RecipeStep temp = savedInstanceState.getParcelable(STEP_EXTRA);
             model.select(temp);
         }
@@ -68,10 +78,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
         recipeDetailMasterFragment.setArguments(bundle);
 
         //create the fragment
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.recipe_details_container, recipeDetailMasterFragment)
-                .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.findFragmentByTag(MASTER_TAG) == null) {
+            fragmentManager.beginTransaction()
+                    .add(R.id.recipe_details_container, recipeDetailMasterFragment, MASTER_TAG)
+                    .addToBackStack(null)
+                    .commit();
+            fragmentManager.executePendingTransactions();
+        }
+
+
 
         //if two-pane, also create the step fragment
         if (mTwoPane){
@@ -84,15 +101,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             if (savedInstanceState == null){
                 //if there's no information, set the current state to the first step
                 model.select(currentRecipe.getSteps().get(0));
+                stepDetailFragment.setArguments(stepBundle);
+
+                if (fragmentManager.findFragmentByTag(STEP_TAG) == null) {
+                    fragmentManager.beginTransaction()
+                            .add(R.id.step_container, stepDetailFragment, STEP_TAG)
+                            .commit();
+                    fragmentManager.executePendingTransactions();
+                }
             } else {
                 RecipeStep currentStep = savedInstanceState.getParcelable(STEP_EXTRA);
                 model.select(currentStep);
             }
 
-            stepDetailFragment.setArguments(stepBundle);
-            fragmentManager.beginTransaction()
-                    .add(R.id.step_container, stepDetailFragment)
-                    .commit();
+
 
             //observer on ViewModel to replace fragment when step changes
             final Observer<RecipeStep> stepObserver = new Observer<RecipeStep>() {
@@ -101,10 +123,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     //replace step detail fragment
                     if (model.isClicked()) {
                         StepDetailFragment stepDetailFragment2 = new StepDetailFragment();
+                        FragmentManager fragmentManager2 = getSupportFragmentManager();
+
                         Bundle changeBundle = new Bundle();
                         changeBundle.putBoolean(SeparateStepActivity.IS_DOUBLE_PANE, true);
                         stepDetailFragment2.setArguments(changeBundle);
-                        fragmentManager.beginTransaction()
+                        fragmentManager2.beginTransaction()
                                 .replace(R.id.step_container, stepDetailFragment2)
                                 .commit();
                     }
@@ -143,6 +167,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable(RECIPE_EXTRA, currentRecipe);
         outState.putParcelable(STEP_EXTRA, model.getSelected());
+        model.unClick();
     }
 }

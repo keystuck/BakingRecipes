@@ -1,7 +1,9 @@
 package com.example.emily.bakingrecipes;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,7 +26,6 @@ import com.example.emily.bakingrecipes.UtilsAndWidget.SharedViewModel;
 import java.util.ArrayList;
 
 public class RecipeDetailMasterFragment extends Fragment {
-
     private static final String BUNDLED_RECIPE = "bundledRecipe";
 
     private SharedViewModel model;
@@ -40,7 +41,6 @@ public class RecipeDetailMasterFragment extends Fragment {
     StepAdapter mAdapter;
     TextView titleTextView;
     TextView ingTextView;
-    TextView stepsTextView;
 
     public interface StepClickListener{
         void onItemClicked(RecipeStep step, View view);
@@ -48,21 +48,6 @@ public class RecipeDetailMasterFragment extends Fragment {
 
     public RecipeDetailMasterFragment(){}
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null){
-            currentRecipe = savedInstanceState.getParcelable(BUNDLED_RECIPE);
-            if (currentRecipe == null){
-                Toast.makeText(getContext(), "problem retrieving recipe", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Recipe temp = getArguments().getParcelable(RecipeDetailActivity.RECIPE_EXTRA);
-            currentRecipe = temp;
-        }
-        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -77,12 +62,15 @@ public class RecipeDetailMasterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null){
             currentRecipe = savedInstanceState.getParcelable(BUNDLED_RECIPE);
+        } else {
+            Recipe temp = getArguments().getParcelable(RecipeDetailActivity.RECIPE_EXTRA);
+            currentRecipe = temp;
         }
+        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
         View rootView = inflater.inflate(R.layout.recipe_layout, container, false);
         titleTextView = rootView.findViewById(R.id.tv_recipe_title);
         ingTextView = rootView.findViewById(R.id.tv_ingredient_list);
-        stepsTextView = rootView.findViewById(R.id.tv_step_text);
         mStepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
         mContext = getActivity();
 
@@ -91,7 +79,7 @@ public class RecipeDetailMasterFragment extends Fragment {
     }
 
     public void populateUI(){
-            titleTextView.setText(currentRecipe.getName());
+        titleTextView.setText(currentRecipe.getName());
             currentIngredientArrayList = currentRecipe.getIngredients();
             currentRecipeStepArrayList = currentRecipe.getSteps();
 

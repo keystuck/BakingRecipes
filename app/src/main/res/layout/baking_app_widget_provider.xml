@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="#09C"
         android:contentDescription="@string/current_recipe_holder"
         android:text="@string/no_recipe_widget"
         android:textColor="#000000"
@@ -22,5 +21,6 @@
         android:id="@+id/appwidget_ingredients_list"
         android:textSize="12sp"
         android:layout_width="match_parent"
+        android:padding="8dp"
         android:layout_height="wrap_content" />
 </LinearLayout>

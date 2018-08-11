@@ -3,12 +3,19 @@
     android:id="@+id/step_detail_layout"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/pv_video_view"
         android:layout_width="match_parent"
         android:layout_height="300dp"></com.google.android.exoplayer2.ui.PlayerView>
+
+    <ImageView
+        android:id="@+id/iv_step_pic"
+        android:contentDescription="@string/step_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_step_full_text"
